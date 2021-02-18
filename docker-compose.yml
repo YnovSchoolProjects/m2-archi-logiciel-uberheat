@@ -1,0 +1,43 @@
+version: "3"
+services:
+  php:
+    container_name: uberheat_php
+    hostname: uberheat_php
+    build: build/php
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=25551
+    expose:
+      - "9000"
+    depends_on:
+      - db
+    volumes:
+      - ./:/var/www/html/symfony
+
+  nginx:
+    container_name: uberheat_web
+    hostname: uberheat_web
+    build: build/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+      - db
+    volumes:
+      - ./public:/var/www/html/symfony/public
+
+  db:
+    container_name: uberheat_db
+    hostname: uberheat_db
+    image: mysql:latest
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: uberheat
+      MYSQL_ROOT_PASSWORD: uberheat
+    ports:
+      - "3306:3306"
+    volumes:
+      - uberheat_data:/var/lib/mysql
+
+volumes:
+  uberheat_data:
