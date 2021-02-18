@@ -13,11 +13,6 @@ class RectangularBuilder implements Builder
 
     private RectangularProductConfiguration $productState;
 
-    public function __construct()
-    {
-        $this->reset();
-    }
-
     public function stepGenericAttributes(array $product)
     {
         $this->productState->setDb1(floatval($product['1m']));
@@ -34,12 +29,9 @@ class RectangularBuilder implements Builder
         $this->productState->setThickness(intval($product['Epaisseur']));
     }
 
-    public function buildProductConfiguration(): ProductConfiguration
+    public function getProductConfiguration(): ProductConfiguration
     {
-        $productConfiguration = $this->productState;
-        $this->reset();
-
-        return $productConfiguration;
+        return $this->productState;
     }
 
     public function reset(): void

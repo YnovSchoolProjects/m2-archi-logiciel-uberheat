@@ -5,25 +5,33 @@ namespace App\Service\ProductConfigurationImport;
 
 
 use App\Entity\Product;
+use App\Entity\ProductConfiguration\ProductConfiguration;
 use App\Repository\ProductRepository;
 use App\Service\ProductConfigurationImport\Builder\Builder;
 use App\Service\ProductConfigurationImport\Builder\BuilderDirector;
 use App\Service\ProductConfigurationImport\Builder\CircularBuilder;
+use App\Service\ProductConfigurationImport\Builder\ConcreteBuilderPool;
 use App\Service\ProductConfigurationImport\Builder\RectangularBuilder;
 use App\Service\ProductConfigurationImport\Iterator\IteratorFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Env\Response;
 
 class ImportService
 {
     private IteratorFactory $iteratorFactory;
     private EntityManagerInterface $manager;
     private ProductRepository $productRepository;
+    /**
+     * @var ConcreteBuilderPool
+     */
+    private ConcreteBuilderPool $builderPool;
 
-    public function __construct(IteratorFactory $iteratorFactory, EntityManagerInterface $manager, ProductRepository $productRepository)
+    public function __construct(IteratorFactory $iteratorFactory, EntityManagerInterface $manager, ProductRepository $productRepository, ConcreteBuilderPool $builderPool)
     {
         $this->iteratorFactory = $iteratorFactory;
         $this->manager = $manager;
         $this->productRepository = $productRepository;
+        $this->builderPool = $builderPool;
     }
 
     public function importProductConfiguration(string $data, string $format): void
@@ -37,31 +45,32 @@ class ImportService
             $builder = $this->selectBuilder($row);
             $director->setBuilder($builder);
 
-            $product = $this->productRepository->findOneBy(['name' => $row['Article']]);
+            $product = $this->productRepository->findOrCreate($row);
 
-            if ($product === null) {
-                $product = new Product();
-                $product->setName($row['Article']);
+            $productConfiguration = $director->make($row);
+            if (!$this->isDuplicate($product, $productConfiguration)) {
+                $product->addConfiguration($productConfiguration);
             }
 
-            // @todo avoid configuration duplication (addConfiguration do it only with ProductConfiguration#id)
-            $product->addConfiguration($director->make($row));
-            $this->manager->persist($product);
-
-            // @todo avoid flush at each operation (but for now needed for the findOneBy)
-            $this->manager->flush();
             $iterator->next();
         }
+        $this->manager->flush();
     }
 
     private function selectBuilder(array $row): Builder {
         switch ($row['Type']) {
             case CircularBuilder::DISCRIMINATOR:
-                return new CircularBuilder();
+                return $this->builderPool->get(CircularBuilder::class);
             case RectangularBuilder::DISCRIMINATOR:
-                return new RectangularBuilder();
+                return $this->builderPool->get(RectangularBuilder::class);
             default:
                 throw new \LogicException("Unsupported row format");
         }
+    }
+
+    private function isDuplicate(Product $product, ProductConfiguration $configuration): bool
+    {
+        // @todo implement
+        return false;
     }
 }

@@ -17,9 +17,10 @@ class BuilderDirector
 
     public function make(array $productConfigurationData): ?ProductConfiguration
     {
+        $this->builder->reset();
         $this->builder->stepGenericAttributes($productConfigurationData);
         $this->builder->stepSpecificAttributes($productConfigurationData);
 
-        return $this->builder->buildProductConfiguration();
+        return $this->builder->getProductConfiguration();
     }
 }
