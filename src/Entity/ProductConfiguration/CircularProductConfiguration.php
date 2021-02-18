@@ -17,6 +17,17 @@ class CircularProductConfiguration extends ProductConfiguration
      */
     private int $diameter;
 
+    public function getDiameter(): int
+    {
+        return $this->diameter;
+    }
+
+    public function setDiameter(int $diameter): CircularProductConfiguration
+    {
+        $this->diameter = $diameter;
+        return $this;
+    }
+
     public function getSurface(): float
     {
         return 2 * pi() * ($this->diameter / 2);

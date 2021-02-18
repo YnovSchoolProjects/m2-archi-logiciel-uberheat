@@ -33,7 +33,7 @@ class Product
     private $basePrice;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductConfiguration\ProductConfiguration", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductConfiguration\ProductConfiguration", mappedBy="product", cascade="persist")
      */
     private Collection $configurations;
 

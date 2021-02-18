@@ -28,27 +28,27 @@ abstract class ProductConfiguration
     private $depth;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $db1;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $db2;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $db5;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $db10;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="configuretions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="configurations")
      * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
      */
     private ?Product $product;
@@ -70,48 +70,48 @@ abstract class ProductConfiguration
         return $this;
     }
 
-    public function getDb1(): ?int
+    public function getDb1(): ?float
     {
         return $this->db1;
     }
 
-    public function setDb1(int $db1): self
+    public function setDb1(float $db1): self
     {
         $this->db1 = $db1;
 
         return $this;
     }
 
-    public function getDb2(): ?int
+    public function getDb2(): ?float
     {
         return $this->db2;
     }
 
-    public function setDb2(int $db2): self
+    public function setDb2(float $db2): self
     {
         $this->db2 = $db2;
 
         return $this;
     }
 
-    public function getDb5(): ?int
+    public function getDb5(): ?float
     {
         return $this->db5;
     }
 
-    public function setDb5(int $db5): self
+    public function setDb5(float $db5): self
     {
         $this->db5 = $db5;
 
         return $this;
     }
 
-    public function getDb10(): ?int
+    public function getDb10(): ?float
     {
         return $this->db10;
     }
 
-    public function setDb10(int $db10): self
+    public function setDb10(float $db10): self
     {
         $this->db10 = $db10;
 
