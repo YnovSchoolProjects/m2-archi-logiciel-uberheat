@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductConfiguration\ProductConfiguration;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -31,5 +32,16 @@ class ProductRepository extends ServiceEntityRepository
         }
 
         return $product;
+    }
+
+    public function isDuplicate(Product $product, ProductConfiguration $configuration): bool
+    {
+        /** @var ProductConfiguration $existingConfiguration */
+        foreach ($product->getConfigurations() as $existingConfiguration) {
+            if ($existingConfiguration->isEqual($configuration)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

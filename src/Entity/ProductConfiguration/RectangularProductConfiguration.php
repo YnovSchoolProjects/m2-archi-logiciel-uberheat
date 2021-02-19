@@ -3,7 +3,7 @@
 namespace App\Entity\ProductConfiguration;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\CircularProductConfigurationRepository;
+use App\Repository\RectangularProductConfigurationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,54 +27,41 @@ class RectangularProductConfiguration extends ProductConfiguration
      */
     private int $thickness;
 
-    /**
-     * @return int
-     */
+    public function isEqual(ProductConfiguration $productConfiguration): bool {
+        return parent::isEqual($productConfiguration) &&
+            $productConfiguration instanceof RectangularProductConfiguration &&
+            $this->width === $productConfiguration->width &&
+            $this->height === $productConfiguration->height &&
+            $this->thickness === $productConfiguration->thickness;
+    }
+
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @param int $width
-     * @return RectangularProductConfiguration
-     */
     public function setWidth(int $width): RectangularProductConfiguration
     {
         $this->width = $width;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * @param int $height
-     * @return RectangularProductConfiguration
-     */
     public function setHeight(int $height): RectangularProductConfiguration
     {
         $this->height = $height;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getThickness(): int
     {
         return $this->thickness;
     }
 
-    /**
-     * @param int $thickness
-     * @return RectangularProductConfiguration
-     */
     public function setThickness(int $thickness): RectangularProductConfiguration
     {
         $this->thickness = $thickness;

@@ -53,6 +53,15 @@ abstract class ProductConfiguration
      */
     private ?Product $product;
 
+    public function isEqual(ProductConfiguration $productConfiguration): bool
+    {
+        return $this->depth === $productConfiguration->depth &&
+            $this->db1 === $productConfiguration->db1 &&
+            $this->db2  === $productConfiguration->db2 &&
+            $this->db5 === $productConfiguration->db5 &&
+            $this->db10 === $productConfiguration->db10;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

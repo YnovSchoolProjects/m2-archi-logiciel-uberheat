@@ -14,16 +14,12 @@ use App\Service\ProductConfigurationImport\Builder\ConcreteBuilderPool;
 use App\Service\ProductConfigurationImport\Builder\RectangularBuilder;
 use App\Service\ProductConfigurationImport\Iterator\IteratorFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Env\Response;
 
 class ImportService
 {
     private IteratorFactory $iteratorFactory;
     private EntityManagerInterface $manager;
     private ProductRepository $productRepository;
-    /**
-     * @var ConcreteBuilderPool
-     */
     private ConcreteBuilderPool $builderPool;
 
     public function __construct(IteratorFactory $iteratorFactory, EntityManagerInterface $manager, ProductRepository $productRepository, ConcreteBuilderPool $builderPool)
@@ -34,10 +30,11 @@ class ImportService
         $this->builderPool = $builderPool;
     }
 
-    public function importProductConfiguration(string $data, string $format): void
+    public function importProductConfiguration(string $data, string $format): int
     {
         $director = new BuilderDirector();
         $iterator = $this->iteratorFactory->createIterator($data, $format);
+        $inserted = 0;
 
         while ($iterator->hasMore()) {
             $row = $iterator->current();
@@ -48,13 +45,16 @@ class ImportService
             $product = $this->productRepository->findOrCreate($row);
 
             $productConfiguration = $director->make($row);
-            if (!$this->isDuplicate($product, $productConfiguration)) {
+            if (!$this->productRepository->isDuplicate($product, $productConfiguration)) {
                 $product->addConfiguration($productConfiguration);
+                $inserted++;
             }
 
             $iterator->next();
         }
         $this->manager->flush();
+
+        return $inserted;
     }
 
     private function selectBuilder(array $row): Builder {
@@ -66,11 +66,5 @@ class ImportService
             default:
                 throw new \LogicException("Unsupported row format");
         }
-    }
-
-    private function isDuplicate(Product $product, ProductConfiguration $configuration): bool
-    {
-        // @todo implement
-        return false;
     }
 }

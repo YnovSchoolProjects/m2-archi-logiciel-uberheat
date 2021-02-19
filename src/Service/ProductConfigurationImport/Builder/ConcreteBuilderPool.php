@@ -10,7 +10,7 @@ class ConcreteBuilderPool
 
     public function get(string $class): Builder
     {
-        if ($this->pool[$class] === null) {
+        if (!array_key_exists($class, $this->pool)) {
             $this->pool[$class] = new $class();
         }
         return $this->pool[$class];

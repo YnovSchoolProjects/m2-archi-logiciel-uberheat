@@ -17,6 +17,12 @@ class CircularProductConfiguration extends ProductConfiguration
      */
     private int $diameter;
 
+    public function isEqual(ProductConfiguration $productConfiguration): bool {
+        return parent::isEqual($productConfiguration) &&
+            $productConfiguration instanceof CircularProductConfiguration &&
+            $this->diameter === $productConfiguration->diameter;
+    }
+
     public function getDiameter(): int
     {
         return $this->diameter;
