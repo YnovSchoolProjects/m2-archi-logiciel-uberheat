@@ -23,8 +23,8 @@ class ImportController extends AbstractController
             return $this->json('File "import" not found', Response::HTTP_BAD_REQUEST);
         }
 
-        $affectedRows = $importService->importProductConfiguration($request->request->get('import'), $format);
-        return $this->json(sprintf("Ok %d", $affectedRows));
+        $importService->importProductConfiguration($request->request->get('import'), $format);
+        return $this->json("Ok");
     }
 
 }

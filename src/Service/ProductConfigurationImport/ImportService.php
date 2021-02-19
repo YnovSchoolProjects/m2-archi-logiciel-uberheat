@@ -30,11 +30,10 @@ class ImportService
         $this->builderPool = $builderPool;
     }
 
-    public function importProductConfiguration(string $data, string $format): int
+    public function importProductConfiguration(string $data, string $format): void
     {
         $director = new BuilderDirector();
         $iterator = $this->iteratorFactory->createIterator($data, $format);
-        $inserted = 0;
 
         while ($iterator->hasMore()) {
             $row = $iterator->current();
@@ -47,14 +46,11 @@ class ImportService
             $productConfiguration = $director->make($row);
             if (!$this->productRepository->isDuplicate($product, $productConfiguration)) {
                 $product->addConfiguration($productConfiguration);
-                $inserted++;
             }
 
             $iterator->next();
         }
         $this->manager->flush();
-
-        return $inserted;
     }
 
     private function selectBuilder(array $row): Builder {
