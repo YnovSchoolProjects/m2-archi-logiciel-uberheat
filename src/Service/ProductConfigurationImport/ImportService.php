@@ -4,8 +4,6 @@
 namespace App\Service\ProductConfigurationImport;
 
 
-use App\Entity\Product;
-use App\Entity\ProductConfiguration\ProductConfiguration;
 use App\Repository\ProductRepository;
 use App\Service\ProductConfigurationImport\Builder\Builder;
 use App\Service\ProductConfigurationImport\Builder\BuilderDirector;
